@@ -1,0 +1,27 @@
+{
+  "name": "bakalaurinis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "serve": "ts-node src/model/server.ts",
+    "serve-dev": "nodemon src/model/server.ts"
+  },
+  "author": "Andrius Simanaitis",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs": "^3.6.0",
+    "@tensorflow/tfjs-core": "^3.6.0",
+    "@tensorflow/tfjs-node": "^3.6.0",
+    "@types/express": "^4.17.13",
+    "edge-paths": "^2.2.1",
+    "express": "^4.17.3",
+    "node-static": "^0.7.11",
+    "nodemon": "^2.0.7",
+    "playwright": "^1.21.0-alpha-mar-16-2022",
+    "puppeteer": "^9.1.1",
+    "puppeteer-core": "^1.9.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}
