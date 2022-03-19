@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "ts-node src/server.ts",
     "serve-dev": "nodemon src/server.ts",
-    "prepare_audio": "ts-node src/prepare_audio.ts"
+    "prepare-audio": "ts-node src/prepare_audio.ts",
+    "train-model": "ts-node src/train_model.ts"
   },
   "author": "Andrius Simanaitis",
   "license": "ISC",
