@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "ts-node src/model/server.ts",
-    "serve-dev": "nodemon src/model/server.ts"
+    "serve": "ts-node src/server.ts",
+    "serve-dev": "nodemon src/server.ts"
   },
   "author": "Andrius Simanaitis",
   "license": "ISC",
