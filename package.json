@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "serve": "ts-node src/server.ts",
-    "serve-dev": "nodemon src/server.ts"
+    "serve-dev": "nodemon src/server.ts",
+    "prepare_audio": "ts-node src/prepare_audio.ts"
   },
   "author": "Andrius Simanaitis",
   "license": "ISC",
