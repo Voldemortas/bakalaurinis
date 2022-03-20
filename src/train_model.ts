@@ -1,5 +1,5 @@
 import {Sequential, Shape, Tensor} from "@tensorflow/tfjs-node";
-import {COMMANDS, AUDIO_OUTPUT, STEP_COUNT, HERTZ_COUNT, MODEL_OUTPUT, SRC} from './config'
+import {COMMANDS, AUDIO_OUTPUT, STEP_COUNT, HERTZ_COUNT, MODEL_OUTPUT, SRC} from '../config'
 import fs from "fs";
 
 const tf = require('@tensorflow/tfjs-node')

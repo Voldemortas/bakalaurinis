@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build-config": "ts-node src/config_to_js.ts",
     "serve": "ts-node src/server.ts",
     "serve-dev": "nodemon src/server.ts",
     "prepare-audio": "ts-node src/prepare_audio.ts",

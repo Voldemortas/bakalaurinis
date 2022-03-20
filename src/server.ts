@@ -1,7 +1,7 @@
 import https from 'https';
 import fs from 'fs';
 import express from 'express'
-import {PORT} from "./config";
+import {PORT} from "../config";
 
 const app = express();
 app.use(express.static(__dirname));

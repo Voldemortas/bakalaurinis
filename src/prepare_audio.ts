@@ -1,6 +1,6 @@
 import playwright, {Page} from 'playwright';
 import fs from 'fs';
-import {AUDIO_OUTPUT, AUDIO_SRC, MAKE_JSON_URL, PORT} from './config';
+import {AUDIO_OUTPUT, AUDIO_SRC, MAKE_JSON_URL, PORT} from '../config';
 
 (async () => {
     const browser = await playwright['webkit'].launch();

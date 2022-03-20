@@ -5,7 +5,7 @@ document.getElementById('audio').innerHTML =
     setTimeout(async () => {
         const rec = await record()
         write(rec)
-    }, 1000)
+    }, SECOND_MS)
 })()
 
 function getIds(data){
@@ -15,7 +15,7 @@ function getIds(data){
         if(nextID <= index){
             if(sum(cur) > 20){
                 acc = [...acc, index]
-                nextID = index + 20
+                nextID = index + STEP_COUNT
             }
         }
         return acc
@@ -24,6 +24,6 @@ function getIds(data){
 
 function write(data){
     const ids = getIds(data)
-    const result = ids.map(e => data.slice(e, e + 20)).map(x => x.map(y => y.flat()))
+    const result = ids.map(e => data.slice(e, e + STEP_COUNT)).map(x => x.map(y => y.flat()))
     document.write(`<pre id="formants">${JSON.stringify(result)}</pre>`)
 }
