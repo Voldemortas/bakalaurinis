@@ -1,12 +1,12 @@
+import * as tf from "@tensorflow/tfjs-node";
 import {Sequential, Shape, Tensor} from "@tensorflow/tfjs-node";
 import {COMMANDS, AUDIO_OUTPUT, STEP_COUNT, HERTZ_COUNT, MODEL_OUTPUT, SRC} from '../config'
 import fs from "fs";
-
-const tf = require('@tensorflow/tfjs-node')
-
+import {getModelConfusionMatrix} from "./model_utils";
 
 const files = COMMANDS.map(command => JSON.parse(fs.readFileSync( `${SRC}/${AUDIO_OUTPUT}/${command}.json`, 'utf-8')) as number[][][])
 
+console.log(files.length)
 
 function normaliseData(arr2d: number[][]): number[][]{
     const upperLimit = 5
@@ -24,8 +24,6 @@ function createData(data: number[][][][]): {input: number[][], output: number[]}
             output
         })).filter(x => x.input.length === STEP_COUNT)
 
-        console.log(newArr)
-
         return [...accumulator, ...newArr]
     }, [])
 }
@@ -41,7 +39,7 @@ async function trainModel(model: Sequential, inputs: Tensor, labels: Tensor) {
 
 
     const batchSize = 17;
-    const epochs = 200;
+    const epochs = 20;
 
     return await model.fit(inputs.expandDims(3), labels, {
         batchSize,
@@ -90,19 +88,49 @@ function createModel(inputShape: Shape) {
 const model = createModel([STEP_COUNT, HERTZ_COUNT, 1])
 
 
-const data = createData(files)
+
+const teachFiles: number[][][][] = [];
+const testFiles: number[][][][] = [];
+const marker = 0.75;
+
+files.forEach(file => {
+    const tempTeach: number[][][] = [];
+    const tempTest: number[][][] = [];
+    file.forEach((piece, index) => {
+        if(index < file.length * marker) {
+            tempTeach.push(piece)
+        } else {
+            tempTest.push(piece)
+        }
+    })
+    teachFiles.push(tempTeach)
+    testFiles.push(tempTest)
+})
 
 
-const inputs = data.map(e => e.input)
-const outputs = data.map(e => e.output)
 
-const inputTensor = tf.tensor(inputs);
-const outputTensor = tf.tensor2d(outputs);
+const teachData = createData(teachFiles)
+
+const teachInputs = teachData.map(e => e.input)
+const teachOutputs = teachData.map(e => e.output)
+
+const inputTensor = tf.tensor(teachInputs);
+const outputTensor = tf.tensor2d(teachOutputs);
+
+const testData = createData(testFiles)
+
+const testInputs = testData.map(e => e.input)
+const testOutputs = testData.map(e => e.output)
+
+const inputTensorTest = tf.tensor3d(testInputs);
+const outputTensorTest = tf.tensor2d(testOutputs);
 
 
 
 trainModel(model, inputTensor, outputTensor).then(async () => {
     const timestamp = new Date().getTime();
     await model.save(`file://./${SRC}/${MODEL_OUTPUT}/${timestamp}`)
+
+    console.table(getModelConfusionMatrix(inputTensorTest, outputTensorTest, model))
 })
 
