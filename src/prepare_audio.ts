@@ -1,13 +1,12 @@
 import playwright, {Page} from 'playwright';
 import fs from 'fs';
-import {AUDIO_OUTPUT, AUDIO_SRC, MAKE_JSON_URL, PORT} from '../config';
+import {AUDIO_OUTPUT, AUDIO_SRC, COMMANDS, MAKE_JSON_URL, PORT, SECOND_MS} from '../config';
 
 (async () => {
     const browser = await playwright['webkit'].launch();
     const context = await browser.newContext({ignoreHTTPSErrors: true});
     const page = await context.newPage();
-    const directories = fs.readdirSync(`${__dirname}/${AUDIO_SRC}`);
-    for await (let directory of directories){
+    for (let directory of COMMANDS){
         try {
             const files = fs.readdirSync(`${__dirname}/${AUDIO_SRC}/${directory}`);
             const data = [];
@@ -28,7 +27,7 @@ import {AUDIO_OUTPUT, AUDIO_SRC, MAKE_JSON_URL, PORT} from '../config';
 
 async function scrap(page: Page, url: string){
     await page.goto(`https://localhost:${PORT}/${MAKE_JSON_URL}?song=${AUDIO_SRC}${url}`);
-    await page.waitForSelector('#formants')
+    await page.waitForSelector('#formants', {timeout: 60 * SECOND_MS})
     const pre = await page.$('#formants');
     return await pre?.evaluate(el => el.textContent)
 }

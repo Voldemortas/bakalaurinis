@@ -127,7 +127,7 @@ Etiam ac arcu vel purus ultrices accumsan.
             return
         }
         time = Date.now() + SECOND_MS
-        console.log(shit)
+
         let bbb = tf.tensor([createData([[shit]])[0].input])
         try {
             const answer = (await model.predict(bbb.expandDims(3)).data()).map((x, i) => i === 0 ? x * 3 : x)

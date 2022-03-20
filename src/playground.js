@@ -1,6 +1,7 @@
 const commandMap = {
     aukstyn,
-    zemyn
+    zemyn,
+    prasau,
 }
 
 function aukstyn() {
@@ -17,6 +18,16 @@ function zemyn() {
         left: 0,
         behavior: 'smooth'
     })
+}
+
+function prasau(){
+    function setBgColor(color) {
+        document.body.style.backgroundColor = color;
+    }
+    const backgroundColor = document.body.style.backgroundColor + '';
+    setBgColor("#AA0000")
+    setTimeout(() => setBgColor(backgroundColor), SECOND_MS)
+
 }
 
 // if (Math.max(...answer) === answer[0]){

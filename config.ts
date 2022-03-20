@@ -9,5 +9,5 @@ export const AUDIO_OUTPUT = 'audio_json';
 export const MODEL_OUTPUT = 'model_result';
 export const MAKE_JSON_URL = 'make_json.html';
 export const SRC = 'src';
-export const COMMANDS = ['aukstyn', 'zemyn',];
-export const MODEL_VERSION = '1647723424828';
+export const COMMANDS = ['aukstyn', 'zemyn', 'prasau'];
+export const MODEL_VERSION = '1647795632813';
