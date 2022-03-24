@@ -4,9 +4,9 @@ import {COMMANDS, AUDIO_OUTPUT, STEP_COUNT, HERTZ_COUNT, MODEL_OUTPUT, SRC} from
 import fs from "fs";
 import {getModelConfusionMatrix} from "./model_utils";
 
-const files = COMMANDS.map(command => JSON.parse(fs.readFileSync( `${SRC}/${AUDIO_OUTPUT}/${command}.json`, 'utf-8')) as number[][][])
-
-console.log(files.length)
+const files = COMMANDS.map(command => JSON.parse(
+    fs.readFileSync( `${SRC}/${AUDIO_OUTPUT}/${command}.json`, 'utf-8')
+) as number[][][])
 
 function normaliseData(arr2d: number[][]): number[][]{
     const upperLimit = 5
@@ -17,7 +17,6 @@ function normaliseData(arr2d: number[][]): number[][]{
 function createData(data: number[][][][]): {input: number[][], output: number[]}[]{
     return data.reduce((accumulator: {input: number[][], output: number[]}[], soundFiles, index) => {
         const output = Array(data.length).fill(0).map((e, i) => i === index?1:0)
-
 
         const newArr = soundFiles.map(soundFile => ({
             input: normaliseData(soundFile),
@@ -96,7 +95,7 @@ const marker = 0.75;
 files.forEach(file => {
     const tempTeach: number[][][] = [];
     const tempTest: number[][][] = [];
-    file.forEach((piece, index) => {
+    shuffleArray(file).forEach((piece, index) => {
         if(index < file.length * marker) {
             tempTeach.push(piece)
         } else {
@@ -120,6 +119,9 @@ const outputTensor = tf.tensor2d(teachOutputs);
 const testData = createData(testFiles)
 
 const testInputs = testData.map(e => e.input)
+
+console.table(testInputs)
+
 const testOutputs = testData.map(e => e.output)
 
 const inputTensorTest = tf.tensor3d(testInputs);
@@ -134,3 +136,12 @@ trainModel(model, inputTensor, outputTensor).then(async () => {
     console.table(getModelConfusionMatrix(inputTensorTest, outputTensorTest, model))
 })
 
+
+function shuffleArray(data: any[]) {
+    const array = [...data]
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array
+}

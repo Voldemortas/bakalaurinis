@@ -1,6 +1,22 @@
 <!DOCTYPE html>
 <html>
+<style>
+    #indicator {
+        width: calc(100vw - 10px);
+        height: calc(100vh - 10px);
+        position: sticky;
+        border-style: solid;
+        border-width: 5px;
+        border-color: transparent;
+        top: 0;
+        left: 0;
+    }
+    #indicator-container {
+        position: absolute;
+    }
+</style>
 <body>
+<div id="indicator" ></div>
 <div>Guess: <span id="guess">Kraunasi...</span></div>
 <pre style="font-size: 18px; line-height: 40px">
 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -77,10 +93,12 @@ Curabitur maximus turpis id nibh tempor laoreet.
 Nullam ut augue ac lorem lacinia commodo eu non massa.
 Etiam ac arcu vel purus ultrices accumsan.
     </pre>
+
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
 <script src='mic.js'></script>
 <script src='record.js'></script>
-<script src="config.js"></script>
+<script src='config.js'></script>
+<script src='utils.js'></script>
 <script src="playground.js"></script>
 <script>
     var __spreadArrays = (this && this.__spreadArrays) || function () {
@@ -131,6 +149,7 @@ Etiam ac arcu vel purus ultrices accumsan.
         let bbb = tf.tensor([createData([[shit]])[0].input])
         try {
             const answer = (await model.predict(bbb.expandDims(3)).data()).map((x, i) => i === 0 ? x * 3 : x)
+            console.table(answer)
             const highestChance = Math.max(...answer)
             const highestChanceIndex = answer.indexOf(highestChance)
             commandMap[COMMANDS[highestChanceIndex]]()

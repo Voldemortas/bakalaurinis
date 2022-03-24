@@ -22,11 +22,11 @@ function zemyn() {
 
 function prasau(){
     function setBgColor(color) {
-        document.body.style.backgroundColor = color;
+        document.getElementById('indicator').setAttribute('style', 'border-color: ' + color)
     }
-    const backgroundColor = document.body.style.backgroundColor + '';
-    setBgColor("#AA0000")
-    setTimeout(() => setBgColor(backgroundColor), SECOND_MS)
+    //const backgroundColor = document.body.style.backgroundColor + '';
+    setBgColor("#00AA00")
+    setTimeout(() => setBgColor('transparent'), SECOND_MS)
 
 }
 
