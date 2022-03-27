@@ -26,7 +26,12 @@ async function drawMatrix() {
 
 async function drawReport() {
     const report = await classificationReport
-    const headers = Object.keys(report[0])
+    const headers = Object.keys(report[0]).map((className, id) => {
+        if(id === 0){
+            return 'Class'
+        }
+        return className
+    })
     const values = report
         .map(classication =>
             Object.values(classication).map((val, index) => {
@@ -38,13 +43,6 @@ async function drawReport() {
         )
     const surface = document.getElementById('report')
     tfvis.render.table(surface, { headers, values })
-}
-
-async function getClassNames() {
-    return await classificationReport.then(classes => classes
-        .map(cl => cl.Command)
-        .map(fixString)
-    )
 }
 
 async function getJson(url) {
