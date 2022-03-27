@@ -125,7 +125,7 @@ export default class ModelUtils {
         const matrixSize = Math.max(...new Set(expectedValues).values())
         const emptyVector = Array.from({length: matrixSize + 1})
 
-        return emptyVector.map((_, index) => {
+        const classReport = emptyVector.map((_, index) => {
             const truePositives = data.filter(x => x.expectedValues === index && x.predictedValues === index).length
             const falsePositives = data.filter(x => x.expectedValues !== index && x.predictedValues === index).length
             const falseNegative = data.filter(x => x.expectedValues === index && x.predictedValues !== index).length
@@ -139,10 +139,72 @@ export default class ModelUtils {
                 Command: COMMANDS[index],
                 Precision: precision.toFixed(3),
                 Recall: recall.toFixed(3),
-                'F1 score': F1.toFixed(3),
-                Support: support.toFixed(3),
+                F1: F1.toFixed(3),
+                Support: support
             }
         })
+
+        return [...classReport, ...this.getSummaryReport(data, classReport)]
+    }
+
+    public static getSummaryReport(data: Predicted[], classReport: Classification[]): Classification[] {
+        const empty = {
+            Command: '',
+            Precision: '',
+            Recall: '',
+            F1: '',
+            Support: ''
+        }
+
+        const accuracy = {
+            Command: 'Accuracy',
+            Precision: '',
+            Recall: '',
+            F1: (data.filter(piece => piece.predictedValues === piece.expectedValues).length / data.length).toFixed(3),
+            Support: data.length
+        }
+
+        const macro = {
+            Command: 'Macro Avg',
+            Precision: (
+                classReport
+                .map(cl => +cl.Precision)
+                .reduce((a, b) => a + b)/classReport.length
+            ).toFixed(3),
+            Recall: (
+                classReport
+                    .map(cl => +cl.Recall)
+                    .reduce((a, b) => a + b)/classReport.length
+            ).toFixed(3),
+            F1: (
+                classReport
+                    .map(cl => +cl.F1)
+                    .reduce((a, b) => a + b)/classReport.length
+            ).toFixed(3),
+            Support: data.length
+        }
+
+        const weighted = {
+            Command: 'Weighted Avg',
+            Precision: (
+                classReport
+                    .map(cl => [+cl.Precision, +cl.Support])
+                    .reduce((a, [value, support]) => a + support * value, 0)/data.length
+            ).toFixed(3),
+            Recall: (
+                classReport
+                    .map(cl => [+cl.Recall, +cl.Support])
+                    .reduce((a, [value, support]) => a + support * value, 0)/data.length
+            ).toFixed(3),
+            F1: (
+                classReport
+                    .map(cl => [+cl.F1, +cl.Support])
+                    .reduce((a, [value, support]) => a + support * value, 0)/data.length
+            ).toFixed(3),
+            Support: data.length
+        }
+
+        return [empty, accuracy, macro, weighted]
     }
 
     public static getHighestIndex(inputArray: Binary[][]): number[] {
@@ -161,8 +223,8 @@ interface Classification {
     Command: string;
     Precision: string;
     Recall: string;
-    "F1 score": string;
-    Support: string
+    F1: string;
+    Support: number | string
 }
 
 interface Predicted {
