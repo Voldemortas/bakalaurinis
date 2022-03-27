@@ -149,7 +149,7 @@ Etiam ac arcu vel purus ultrices accumsan.
         let bbb = tf.tensor([createData([[shit]])[0].input])
         try {
             const answer = (await model.predict(bbb.expandDims(3)).data()).map((x, i) => i === 0 ? x * 3 : x)
-            console.table(answer)
+            console.table(COMMANDS.map((command, index) => [command, answer[index]]))
             const highestChance = Math.max(...answer)
             const highestChanceIndex = answer.indexOf(highestChance)
             commandMap[COMMANDS[highestChanceIndex]]()
