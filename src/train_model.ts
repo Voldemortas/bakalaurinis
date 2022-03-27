@@ -20,7 +20,11 @@ ModelUtils
         const confusionMatrix = ModelUtils.getConfusionMatrix(joinedPredictions)
         const classificationReport = ModelUtils.getClassificationReport(joinedPredictions)
 
-        fs.mkdirSync(`./${SRC}/${MODEL_OUTPUT}/${fileName}`)
+        try {
+            fs.mkdirSync(`./${SRC}/${MODEL_OUTPUT}/${fileName}`)
+        }catch (_){
+
+        }
         saveFile(fileName + '/matrix', confusionMatrix)
         saveFile(fileName + '/classification', classificationReport)
     })
