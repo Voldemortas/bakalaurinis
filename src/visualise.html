@@ -3,7 +3,20 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
 <script src='config.js'></script>
 <script src='utils.js'></script>
+<script src="visualise.js"></script>
+
+<style>
+    #matrix {
+        margin: 20px;
+    }
+    #report {
+        padding: 40px;
+    }
+</style>
+
 <div id="model"></div>
+<div id="matrix"></div>
+<div id="report"></div>
 
 <script>
     (async () => {
