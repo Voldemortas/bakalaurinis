@@ -16,4 +16,5 @@ export const MODEL_OUTPUT = 'model_result';
 export const MAKE_JSON_URL = 'make_json.html';
 export const SRC = 'src';
 export const COMMANDS = ['virsun', 'apacion', 'prasau', 'spausk', 'kitas'];
-export const MODEL_VERSION = '1648279138112';
+export const MODEL_VERSION = '001';
+export const PLUGIN_ZIP_NAME = 'valdymasBalsu.zip';

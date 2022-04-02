@@ -1,0 +1,8 @@
+# Ignore everything in this directory
+*
+# Except theses files
+!.gitignore
+!contentscript.js
+!manifest.json
+!tf.min.js.map
+!tf.min.js

@@ -5,9 +5,9 @@ import {COMMANDS} from "../../config";
 
 export default class ModelUtils {
     public static COMPILE_PROPS = {
-        optimizer: tf.train.adam(),
-        loss: tf.losses.meanSquaredError,
-        metrics: ['mse'],
+        optimizer: tf.train.adamax(),
+        loss: tf.losses.softmaxCrossEntropy,
+        metrics: [tf.metrics.categoricalCrossentropy],
     };
 
     public static prepareData(fileData: number[][][][]): InputOutput[][] {
@@ -54,7 +54,7 @@ export default class ModelUtils {
             const trainData = this.shuffle(kFolds[index])
             const [trainInputs, trainOutputs] = this.getInputsOutputs(testData)
             const [testInputs, testOutputs] = this.getInputsOutputs(trainData)
-            await model.train(trainInputs, trainOutputs, 17, 20)
+            await model.train(trainInputs, trainOutputs, 30, 20)
             return this.testModel(model, testInputs, testOutputs)
         }));
     }

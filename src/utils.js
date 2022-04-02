@@ -1,18 +1,6 @@
 /**
  *
  * @param {number[]} arr
- * @returns {number}
- */
-function average(arr) {
-    if(arr.length === 0) {
-        return 0
-    }
-    return arr.reduce((acc, cur) => acc + cur, 0) / arr.length
-}
-
-/**
- *
- * @param {number[]} arr
  * @param {number} percentileMark - value between 0 and 1
  * @return {number} - get the value at the *percentileMark* of the array
  */

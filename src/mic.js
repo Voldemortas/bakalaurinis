@@ -48,11 +48,6 @@ function getMicrophone(finalArray, fftSize = 2 ** 13) {
   analyser.maxDecibels = -10
   analyser.smoothingTimeConstant = 0.85
 
-  var distortion = audioCtx.createWaveShaper()
-  var gainNode = audioCtx.createGain()
-  var biquadFilter = audioCtx.createBiquadFilter()
-  var convolver = audioCtx.createConvolver()
-
   if (navigator.mediaDevices.getUserMedia) {
     console.log('getUserMedia supported.')
     var constraints = { audio: true }
@@ -60,17 +55,8 @@ function getMicrophone(finalArray, fftSize = 2 ** 13) {
       .getUserMedia(constraints)
       .then(function (stream) {
         source = audioCtx.createMediaStreamSource(stream)
-        source.connect(distortion)
-        distortion.connect(biquadFilter)
-        biquadFilter.connect(gainNode)
-        convolver.connect(gainNode)
-        gainNode.connect(analyser)
-
+        source.connect(analyser)
         visualize()
-        distortion.oversample = '4x'
-        biquadFilter.gain.setTargetAtTime(0, audioCtx.currentTime, 0)
-        biquadFilter.disconnect(0)
-        biquadFilter.connect(gainNode)
       })
       .catch(function (err) {
         console.log('The following gUM error occured: ' + err)

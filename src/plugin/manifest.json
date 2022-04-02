@@ -1,29 +1,27 @@
 {
   "name": "Valdyk puslapius balsu",
-  "version": "1.0",
+  "version": "0.1",
   "manifest_version": 3,
-  "permissions": ["desktopCapture"],
+  "permissions": [],
   "content_scripts": [
     {
       "matches": ["https://*/*", "http://*/*"],
       "js": ["contentscript.js"],
-      "rune_at": "document_start"
+      "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
-        "images/get_started16.png",
-        "images/get_started32.png",
-        "images/get_started48.png",
-        "images/get_started128.png",
-        "weights.bin",
-        "model.json",
-        "draw.js",
-        "inject.js",
-        "model.js",
+        "config.js",
+        "utils.js",
+        "model_result/001/weights.bin",
+        "model_result/001/model.json",
+        "record.js",
         "mic.js",
-        "tf.min.js"
+        "tf.min.js",
+        "tf.min.js.map",
+        "playground.js"
       ],
       "matches": ["<all_urls>"]
     }

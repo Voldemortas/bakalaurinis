@@ -48,7 +48,7 @@ export default class BaseModel<T extends Sequential | LayersModel> {
     }
 
     public async saveModel(filename?: string) {
-        const timestamp = !!filename ?? new Date().getTime();
+        const timestamp = filename ?? new Date().getTime();
         await this.model.save(`file://./${SRC}/${MODEL_OUTPUT}/${timestamp}`)
         fs.writeFileSync(
             `./${SRC}/${MODEL_OUTPUT}/${timestamp}/config.json`,

@@ -1,22 +1,26 @@
-const tensor = document.createElement("script")
-const tfURL = chrome.runtime.getURL("tf.min.js")
-tensor.setAttribute('src', tfURL)
+setTimeout(() => {
+    appendScript('config.js')
+    appendScript('utils.js')
+    appendScript('tf.min.js')
+    appendScript('playground.js')
+    appendScript('mic.js')
+    appendScript('record.js')
+    setTimeout(() => {
+        makePluginModelUrl()
+    }, 500)
+}, 500)
 
-const mic = document.createElement("script")
-const micURL = chrome.runtime.getURL("mic.js")
-mic.setAttribute('src', micURL)
+function appendScript(fileName) {
+    const tag = document.createElement('script')
+    const url = chrome.runtime.getURL(fileName)
+    tag.setAttribute('src', url)
+    document.body.appendChild(tag)
+}
 
-const draw = document.createElement("script")
-const drawURL = chrome.runtime.getURL("draw.js")
-draw.setAttribute('src', drawURL)
-
-const model = document.createElement("script")
-const modelURL = chrome.runtime.getURL("model.js")
-model.setAttribute('src', modelURL)
-
-document.body.appendChild(tensor)
-document.body.appendChild(mic)
-document.body.appendChild(draw)
-document.body.appendChild(model)
-
-
+function makePluginModelUrl() {
+    const tag = document.createElement('span')
+    tag.setAttribute('id', 'PLUGIN_MODEL_URL')
+    tag.setAttribute('data-PLUGIN_MODEL_URL', chrome.runtime.getURL(''))
+    tag.setAttribute('style', "display=none")
+    document.body.appendChild(tag)
+}
