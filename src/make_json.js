@@ -1,9 +1,15 @@
-document.getElementById('audio').innerHTML =
+/**
+ * @type {HTMLAudioElement}
+ */
+const audioElement = document.getElementById('audio')
+    audioElement.innerHTML =
     `<source src="${document.location.search.replace(/\?song=/, '')}" type="audio/mpeg" />`
+
 
 ;(async () => {
     setTimeout(async () => {
-        const rec = await record()
+        audioElement.play()
+        const rec = await record(getAudioFrequencies, audioElement.duration * SECOND_MS)
         write(rec)
     }, SECOND_MS)
 })()

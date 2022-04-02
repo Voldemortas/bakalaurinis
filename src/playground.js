@@ -105,18 +105,16 @@ async function guess(){
     if(Date.now() < time){
         return
     }
-    let ww = await record();
+    let ww = await record(getMicrophoneFrequencies, DURATION_MS);
     let shit = [...ww]
     if(!worthPassing(shit) || Date.now() < time){
         return
     }
     time = Date.now() + SECOND_MS
 
-    //drawCanvases([shit])
-
-    let bbb = tf.tensor([createData([[shit]])[0].input])
+    let tensorFromMic = tf.tensor([createData([[shit]])[0].input])
     try {
-        const answer = (await model.predict(bbb.expandDims(3)).data())
+        const answer = (await model.predict(tensorFromMic.expandDims(3)).data())
 
         console.table(COMMANDS.map((command, index) => [command, answer[index]]))
         const highestChance = Math.max(...answer)

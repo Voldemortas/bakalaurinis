@@ -1,21 +1,22 @@
 /**
- * @type {{val: Uint8Array[]}}
+ * @type {{val: Uint8Array}}
  */
-let values = {val: []}
+let values = {val: null}
 
-setTimeout(() => getMicrophone(values), 10)
-const playDiv = () => document.getElementById('audio')
-
-async function record() {
-    if (playDiv()) {
-        playDiv().play()
-    }
-    const durationOfRecording = (playDiv()?.duration ?? 1) * SECOND_MS
-    let steps = durationOfRecording / STEP_MS
+/**
+ *
+ * @param {({val: Uint8Array}) => void} callback
+ * @param {number} durationMs
+ * @return {Promise<number[][]|*>}
+ */
+async function record(callback, durationMs) {
+    callback(values)
+    let steps = durationMs / STEP_MS
     const recorded = []
 
     function updateHistory() {
         const realWaves = values.val.slice(0, HERTZ_SAMPLES_TO_USE)
+        console.log(realWaves)
         const simplified = []
         for (let i = HERTZ_TO_IGNORE; i < HERTZ_COUNT + HERTZ_TO_IGNORE; i++) {
             let total = 0;
@@ -33,7 +34,7 @@ async function record() {
     }
 
     setTimeout(updateHistory, STEP_MS)
-    await new Promise(resolve => setTimeout(resolve, durationOfRecording + STEP_MS * 4))
+    await new Promise(resolve => setTimeout(resolve, durationMs + STEP_MS * 4))
 
     const thirdQuartile = percentile(recorded.flat(), PERCENTILE)
     return fillZeroes(normalise(recorded, thirdQuartile))

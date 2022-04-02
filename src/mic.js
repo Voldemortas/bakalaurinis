@@ -1,79 +1,88 @@
 /**
  *
- * @param {{val: Uint8Array[]}} finalArray
- * @param {number} fftSize
+ * @param {{val: Uint8Array}} finalArray
  */
-function getMicrophone(finalArray, fftSize = 2 ** 13) {
-  // Older browsers might not implement mediaDevices at all, so we set an empty object first
-  if (navigator.mediaDevices === undefined) {
-    navigator.mediaDevices = {}
-  }
+async function getMicrophoneFrequencies(finalArray) {
+    const stream = await askForMicrophonePermissions()
 
-  // Some browsers partially implement mediaDevices. We can't just assign an object
-  // with getUserMedia as it would overwrite existing properties.
-  // Here, we will just add the getUserMedia property if it's missing.
-  if (navigator.mediaDevices.getUserMedia === undefined) {
-    navigator.mediaDevices.getUserMedia = function (constraints) {
-      // First get ahold of the legacy getUserMedia, if present
-      var getUserMedia =
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia ||
-        navigator.msGetUserMedia
+    const analyser = getAudioAnalyser('createMediaStreamSource', stream)
+    visualize(finalArray, analyser)
+}
 
-      // Some browsers just don't implement it - return a rejected promise with an error
-      // to keep a consistent interface
-      if (!getUserMedia) {
-        return Promise.reject(
-          new Error('getUserMedia is not implemented in this browser')
-        )
-      }
+/**
+ *
+ * @param {{val: Uint8Array}} finalArray
+ */
+function getAudioFrequencies(finalArray) {
+    const audioFile = document.getElementById('audio')
 
-      // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
-      return new Promise(function (resolve, reject) {
-        getUserMedia.call(navigator, constraints, resolve, reject)
-      })
+    const analyser = getAudioAnalyser('createMediaElementSource', audioFile)
+    visualize(finalArray, analyser)
+}
+
+/**
+ *
+ * @param {"createMediaStreamSource" | "createMediaElementSource"} createCallback
+ * @param {MediaStream | HTMLAudioElement} streamSource
+ * @return {AnalyserNode}
+ */
+function getAudioAnalyser(createCallback, streamSource) {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+    const source = audioCtx[createCallback](streamSource)
+    const analyser = audioCtx.createAnalyser()
+    analyser.minDecibels = -90
+    analyser.maxDecibels = -10
+    analyser.smoothingTimeConstant = 0.85
+
+    source.connect(analyser)
+
+    return analyser
+}
+
+/**
+ *
+ * @param {{val: Uint8Array}} finalArray
+ * @param {AnalyserNode} analyser
+ */
+function visualize(finalArray, analyser) {
+    analyser.fftSize = 2 ** 12
+    const bufferLengthAlt = analyser.frequencyBinCount
+    const dataArrayAlt = new Uint8Array(bufferLengthAlt)
+
+    const drawAlt = function () {
+        requestAnimationFrame(drawAlt);
+        analyser.getByteFrequencyData(dataArrayAlt);
+        finalArray.val = dataArrayAlt;
     }
-  }
-
-  // set up forked web audio context, for multiple browsers
-  // window. is needed otherwise Safari explodes
-
-  var audioCtx = new (window.AudioContext || window.webkitAudioContext)()
-  var source
-
-  //set up the different audio nodes we will use for the app
-
-  var analyser = audioCtx.createAnalyser()
-  analyser.minDecibels = -90
-  analyser.maxDecibels = -10
-  analyser.smoothingTimeConstant = 0.85
-
-  if (navigator.mediaDevices.getUserMedia) {
-    console.log('getUserMedia supported.')
-    var constraints = { audio: true }
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(function (stream) {
-        source = audioCtx.createMediaStreamSource(stream)
-        source.connect(analyser)
-        visualize()
-      })
-      .catch(function (err) {
-        console.log('The following gUM error occured: ' + err)
-      })
-  }
-
-  function visualize() {
-    audioCtx.vo
-    analyser.fftSize = fftSize
-    var bufferLengthAlt = analyser.frequencyBinCount
-    var dataArrayAlt = new Uint8Array(bufferLengthAlt)
-    var drawAlt = function () {
-      drawVisual = requestAnimationFrame(drawAlt)
-      analyser.getByteFrequencyData(dataArrayAlt)
-      finalArray.val = dataArrayAlt
-    }
-
     drawAlt()
-  }
+}
+
+/**
+ *
+ * @return {Promise<MediaStream>}
+ */
+async function askForMicrophonePermissions() {
+    if (navigator?.mediaDevices?.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = function (constraints) {
+            const getUserMedia =
+                navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia ||
+                navigator.msGetUserMedia
+
+            if (!getUserMedia) {
+                return Promise.reject(
+                    new Error('getUserMedia is not implemented in this browser')
+                )
+            }
+
+            return new Promise(function (resolve, reject) {
+                getUserMedia.call(navigator, constraints, resolve, reject)
+            })
+        }
+    }
+
+    const constraints = {audio: true}
+    return await navigator.mediaDevices.getUserMedia(constraints).catch(error => {
+        console.log('error', {error})
+    })
 }

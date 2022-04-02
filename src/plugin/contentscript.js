@@ -2,6 +2,7 @@ setTimeout(() => {
     appendScript('config.js')
     appendScript('utils.js')
     appendScript('tf.min.js')
+    appendScript('tf.min.js.map')
     appendScript('playground.js')
     appendScript('mic.js')
     appendScript('record.js')
