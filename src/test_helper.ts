@@ -1,12 +1,29 @@
 import rewire from "rewire";
+import * as globalConfig from "../config"
 
-export function getFunctions<T>(fileName: string, functionNames: string[]) {
-    const file = rewire(fileName);
+export default class Test_helper {
+    private readonly file;
 
-    return functionNames.reduce((acc, cur) => {
-        let temp = {}
-        //@ts-ignore
-        temp[cur] = file.__get__(cur)
-        return {...acc, ...temp}
-    }, {}) as T
+    constructor(fileName: string, config: PartialConfig) {
+        this.file = rewire(fileName);
+        this.setConfig(config)
+    }
+
+    getFunctions<T>(...functionNames: string[]) {
+        return functionNames.reduce((acc, cur) => {
+            let temp = {}
+            //@ts-ignore
+            temp[cur] = this.file.__get__(cur)
+            return {...acc, ...temp}
+        }, {}) as T
+    }
+
+    private setConfig(config: PartialConfig) {
+        Object.keys(globalConfig).forEach(key => {
+            // @ts-ignore
+            this.file.__set__(key, config[key])
+        })
+    }
 }
+
+type PartialConfig = Partial<typeof globalConfig>
