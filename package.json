@@ -20,6 +20,7 @@
     "@tensorflow/tfjs-node": "^3.6.0",
     "@types/archiver": "^5.3.1",
     "@types/express": "^4.17.13",
+    "@types/rewire": "^2.5.28",
     "archiver": "^5.3.0",
     "edge-paths": "^2.2.1",
     "express": "^4.17.3",
@@ -28,7 +29,14 @@
     "playwright": "^1.21.0-alpha-mar-16-2022",
     "puppeteer": "^9.1.1",
     "puppeteer-core": "^1.9.0",
+    "rewire": "^6.0.0",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.4"
+    "typescript": "^4.6.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "babel-plugin-rewire": "^1.2.0",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4"
   }
 }
