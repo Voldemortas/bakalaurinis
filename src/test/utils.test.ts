@@ -56,8 +56,8 @@ describe('utils.js', () => {
         })
 
         it(`fills empty array to all zeroes`, () => {
-            const data = [[1], [1]]
-            expect(fillZeroes(data)).toMatchObject([[1], [1], [0, 0]])
+            const data = [[1, 1], [1, 1]]
+            expect(fillZeroes(data)).toMatchObject([[1, 1], [1, 1], [0, 0]])
         })
     })
 })

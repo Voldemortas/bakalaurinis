@@ -4,7 +4,7 @@ import * as globalConfig from "../config"
 export default class Test_helper {
     private readonly file;
 
-    constructor(fileName: string, config: PartialConfig) {
+    constructor(fileName: string, config: Object) {
         this.file = rewire(fileName);
         this.setConfig(config)
     }
@@ -18,12 +18,10 @@ export default class Test_helper {
         }, {}) as T
     }
 
-    private setConfig(config: PartialConfig) {
-        Object.keys(globalConfig).forEach(key => {
+    private setConfig(config: Object) {
+        Object.keys({...globalConfig, ...config}).forEach(key => {
             // @ts-ignore
             this.file.__set__(key, config[key])
         })
     }
 }
-
-type PartialConfig = Partial<typeof globalConfig>
