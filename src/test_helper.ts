@@ -6,7 +6,7 @@ export default class Test_helper {
 
     constructor(fileName: string, config: Object) {
         this.file = rewire(fileName);
-        this.setConfig(config)
+        this.setInitialConfig(config)
     }
 
     getFunctions<T>(...functionNames: string[]) {
@@ -18,8 +18,12 @@ export default class Test_helper {
         }, {}) as T
     }
 
-    private setConfig(config: Object) {
-        Object.keys({...globalConfig, ...config}).forEach(key => {
+    private setInitialConfig(config: Object) {
+        this.addConfig({...globalConfig, ...config})
+    }
+
+    public addConfig(config: Object) {
+        Object.keys(config).forEach(key => {
             // @ts-ignore
             this.file.__set__(key, config[key])
         })

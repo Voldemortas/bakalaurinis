@@ -1,7 +1,7 @@
-const cellWidth = Math.floor(CANVAS_WIDTH / STEP_COUNT);
-const cellHeight = Math.floor(CANVAS_HEIGHT / HERTZ_COUNT);
-const canvasWidth = STEP_COUNT * cellWidth;
-const canvasHeight = HERTZ_COUNT * cellHeight;
+let cellWidth = () => Math.floor(CANVAS_WIDTH / STEP_COUNT);
+let cellHeight = () => Math.floor(CANVAS_HEIGHT / HERTZ_COUNT);
+let canvasWidth = () => STEP_COUNT * cellWidth();
+let canvasHeight = () => HERTZ_COUNT * cellHeight();
 
 async function makeCanvases(){
     const data = JSON.parse(document.getElementById("input").value)
@@ -14,7 +14,7 @@ async function drawCanvases(json) {
     for await (const pair of pairs) {
         const {value, id} = pair;
         document.getElementById("main").innerHTML +=
-            `<canvas id="canvas_${id}" width="${canvasWidth}" height="${canvasHeight}"></canvas>`
+            `<canvas id="canvas_${id}" width="${canvasWidth()}" height="${canvasHeight()}"></canvas>`
         await drawCanvas(value, id)
     }
 }
@@ -26,7 +26,7 @@ async function drawCanvas(json, id) {
     json.forEach((lines, line) => lines.forEach((cell, row) => {
         context.beginPath()
         context.fillStyle = getHex(cell)
-        context.fillRect(line * cellWidth, canvasHeight - (row + 1) * cellHeight, cellWidth, cellHeight)
+        context.fillRect(line * cellWidth(), canvasHeight() - (row + 1) * cellHeight(), cellWidth(), cellHeight())
     }))
     await sleep(50)
     document.getElementById('main').innerHTML +=
@@ -37,7 +37,7 @@ async function drawCanvas(json, id) {
 }
 
 function getHex(value) {
-    const grayScale = (255 - Math.floor(value * 255)).toString(16);
+    const grayScale = (255 - Math.floor(value * 255)).toString(16).padStart(2, '0');
 
     return '#' + grayScale + grayScale + grayScale;
 }
