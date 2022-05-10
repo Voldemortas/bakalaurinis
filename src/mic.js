@@ -62,7 +62,16 @@ function visualize(finalArray, analyser) {
  * @return {Promise<MediaStream>}
  */
 async function askForMicrophonePermissions() {
-    if (navigator?.mediaDevices?.getUserMedia === undefined) {
+    const constraints = {audio: true}
+    return await getUserMediaCallback()(constraints)
+}
+
+/**
+ *
+ * @return {(constraints: MediaStreamConstraints) => Promise<MediaStream>}
+ */
+function getUserMediaCallback() {
+    if (navigator.mediaDevices?.getUserMedia === undefined) {
         navigator.mediaDevices.getUserMedia = function (constraints) {
             const getUserMedia =
                 navigator.webkitGetUserMedia ||
@@ -71,7 +80,7 @@ async function askForMicrophonePermissions() {
 
             if (!getUserMedia) {
                 return Promise.reject(
-                    new Error('getUserMedia is not implemented in this browser')
+                    new Error('getUserMediaCallback is not implemented in this browser')
                 )
             }
 
@@ -81,8 +90,5 @@ async function askForMicrophonePermissions() {
         }
     }
 
-    const constraints = {audio: true}
-    return await navigator.mediaDevices.getUserMedia(constraints).catch(error => {
-        console.log('error', {error})
-    })
+    return constraints => navigator.mediaDevices.getUserMedia(constraints)
 }

@@ -18,6 +18,11 @@ export default class Commons {
         if(typeof callback === 'function') return callback as unknown as oneCallback<T>
         return () => callback
     }
+
+    public static async ForEachAsync<T>(array: T[], fn: (t: T) => Promise<any>) {
+        for (let t of array) { await fn(t) }
+        return Promise.resolve()
+    }
 }
 
 type oneCallback<T> = ((value?: T, index?: number, array?: T[]) => T)

@@ -2,3 +2,4 @@
 /.idea
 /src/config.js
 /valdymasBalsu*
+!.valdymasBalsu.zip

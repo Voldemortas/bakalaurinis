@@ -39,7 +39,11 @@ export default class ModelUtils {
 
     public static async trainAndEvaluateModels<T extends Sequential | LayersModel>(
         data: number[][][][],
-        models: BaseModel<T>[])
+        models: BaseModel<T>[],
+        loss: any,
+        batchSize = 30,
+        epochs = 20,
+        )
         : Promise<Predicted[][]> {
         const preparedData = this.prepareData(data)
         const kFoldedFiles = preparedData.map(file => this.kFoldData(file, models.length))
@@ -47,14 +51,14 @@ export default class ModelUtils {
             .map((_, index) => kFoldedFiles.map(file => file[index]).flat())
 
         return await Promise.all(models.map(async (model, index) => {
-            model.compile(this.COMPILE_PROPS)
+            model.compile({...this.COMPILE_PROPS, loss})
             const testData = kFolds
                 .filter((_, id) => id !== index)
                 .flat()
             const trainData = this.shuffle(kFolds[index])
             const [trainInputs, trainOutputs] = this.getInputsOutputs(testData)
             const [testInputs, testOutputs] = this.getInputsOutputs(trainData)
-            await model.train(trainInputs, trainOutputs, 30, 20)
+            await model.train(trainInputs, trainOutputs, batchSize, epochs)
             return this.testModel(model, testInputs, testOutputs)
         }));
     }

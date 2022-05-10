@@ -3,8 +3,37 @@ const directory = document.location.search.replace(/\?directory=/, '')
 const confusionMatrix = getJson('matrix.json')
 const classificationReport = getJson('classification.json')
 
+const batchList = Array.from({length: 5}).map((_, x) => (x + 1) * 20)
+const epochList = Array.from({length: 5}).map((_, x) => (x + 1) * 10)
+
 drawMatrix()
 drawReport()
+
+async function getChunk() {
+    const promises = await Promise.all(epochList.map(async epoch => batchList.map(async batch =>
+        await getJson(`_${batch}_${epoch}/classification.json`)
+            .then(val => val.filter(c => c.Command === 'Accuracy')[0].F1 * 1)
+            .catch(_ => 0)
+    )))
+    return await Promise.all(promises.map(async x => await Promise.all(x)))
+}
+
+async function drawAccuracyMatrix() {
+    const values = await getChunk()
+    const surface = document.getElementById('matrix')
+    tfvis.render.heatmap(
+        surface,
+        {
+            values,
+            yTickLabels: batchList,
+            xTickLabels: epochList,
+        },
+        {
+            width: 450,
+            height: 400,
+        }
+    );
+}
 
 async function drawMatrix() {
     const values = await confusionMatrix
@@ -46,7 +75,7 @@ async function drawReport() {
 }
 
 async function getJson(url) {
-    const request = await fetch(`${MODEL_OUTPUT}/${directory}/${url}`)
+    const request = await fetch(`${MODEL_OUTPUT}/${directory}${url}`)
     return await request.json()
 }
 

@@ -5,12 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build-config": "ts-node src/config_to_js.ts",
-    "serve": "ts-node src/server.ts",
-    "serve-dev": "nodemon src/server.ts",
+    "serve": "nodemon src/server.ts",
     "prepare-audio": "ts-node src/prepare_audio.ts",
-    "train-model": "ts-node src/train_model.ts",
-    "make-zip": "ts-node src/make_zip.ts",
-    "run": "ts-node src/config_to_js.ts && ts-node src/prepare_audio.ts && ts-node src/train_model.ts"
+    "test-models": "ts-node src/test_models.ts",
+    "build-model": "ts-node src/build_model.ts",
+    "make-zip": "ts-node src/make_zip.ts"
   },
   "author": "Andrius Simanaitis",
   "license": "ISC",
